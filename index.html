@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英文單字翻頁卡</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <h1>英文單字翻頁卡</h1>
+        <p>點擊卡片翻面，查看中文解釋、詞性、例句與字根分析。</p>
+      </div>
+    </header>
+
+    <main class="flashcard-main">
+      <div class="flashcard-area">
+        <div class="flashcard" id="flashcard" tabindex="0" aria-label="單字卡，按一下以翻面">
+          <div class="card-face card-front">
+            <div class="face-label">英文單字</div>
+            <div class="word" id="wordText">loading</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="face-label">中文解釋</div>
+            <div class="meaning" id="wordMeaning">正在載入...</div>
+            <div class="word-meta">
+              <span class="meta-label">詞性</span>
+              <span id="wordPart">--</span>
+            </div>
+            <div class="word-detail">
+              <strong>例句</strong>
+              <p id="wordSentence">請點擊卡片以查看內容。</p>
+            </div>
+            <div class="word-detail">
+              <strong>字根分析</strong>
+              <p id="wordRoot">請點擊卡片以查看內容。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flashcard-controls">
+        <button class="control-button" id="prevBtn">上一張</button>
+        <div class="progress" id="progressText">1 / 100</div>
+        <button class="control-button" id="nextBtn">下一張</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+:root {
+  --bg: #eff4ff;
+  --surface: #ffffff;
+  --text: #111827;
+  --muted: #5b6b84;
+  --primary: #3b82f6;
+  --secondary: #10b981;
+  --accent: #7c3aed;
+  --border: #d1d5db;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top left, #eef5ff 0%, #f8fbff 40%, #f3f6ff 100%);
+  color: var(--text);
+}
+
+.app-shell {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+.app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--surface);
+  border: 1px solid rgba(209, 213, 219, 0.85);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
+}
+
+.app-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.app-header p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 720px;
+}
+
+.flashcard-main {
+  margin-top: 1.75rem;
+}
+
+.flashcard-area {
+  perspective: 1400px;
+  display: grid;
+  place-items: center;
+}
+
+.flashcard {
+  width: min(540px, 100%);
+  max-width: 100%;
+  min-height: 420px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s ease;
+  cursor: pointer;
+}
+
+.flashcard.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid rgba(209, 213, 219, 0.9);
+  box-shadow: 0 26px 60px rgba(15, 23, 42, 0.1);
+  padding: 2rem;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.card-front {
+  z-index: 2;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+.face-label {
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.word {
+  margin-top: 0.75rem;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  line-height: 1;
+  font-weight: 800;
+}
+
+.meaning {
+  font-size: 1.35rem;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+.word-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.2rem;
+  border-radius: 16px;
+  background: #eef2ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.meta-label {
+  color: var(--muted);
+}
+
+.word-detail {
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+}
+
+.word-detail strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.word-detail p {
+  margin: 0;
+  line-height: 1.75;
+  color: #334155;
+}
+
+.flashcard-controls {
+  margin-top: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.control-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.95rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.control-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(59, 130, 246, 0.18);
+}
+
+.progress {
+  min-width: 120px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .app-header {
+    padding: 1.5rem;
+  }
+
+  .flashcard {
+    min-height: 360px;
+  }
+
+  .word {
+    font-size: clamp(2.5rem, 7vw, 3.5rem);
+  }
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    padding: 1.2rem 0 2rem;
+  }
+
+  .card-face {
+    padding: 1.4rem;
+  }
+
+  .word-meta,
+  .word-detail {
+    padding: 0.9rem 1rem;
+  }
+}
