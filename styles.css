@@ -54,6 +54,30 @@ body {
   max-width: 720px;
 }
 
+.search-container {
+  margin: 1.5rem 0;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.search-container input {
+  flex: 1 1 280px;
+  min-width: 220px;
+  padding: 1rem 1.2rem;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.search-container input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.16);
+}
+
 .flashcard-main {
   margin-top: 1.75rem;
 }
@@ -113,6 +137,16 @@ body {
   font-size: clamp(3rem, 5vw, 4.5rem);
   line-height: 1;
   font-weight: 800;
+}
+
+.word-root-preview {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #334155;
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  line-height: 1.6;
 }
 
 .meaning {

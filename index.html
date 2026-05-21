@@ -15,12 +15,18 @@
       </div>
     </header>
 
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="輸入中文或英文的單字" aria-label="搜尋單字">
+      <button class="control-button" id="searchBtn">查詢</button>
+    </div>
+
     <main class="flashcard-main">
       <div class="flashcard-area">
         <div class="flashcard" id="flashcard" tabindex="0" aria-label="單字卡，按一下以翻面">
           <div class="card-face card-front">
             <div class="face-label">英文單字</div>
             <div class="word" id="wordText">loading</div>
+            <div class="word-root-preview" id="wordRootPreview">字根：請點擊卡片以查看內容。</div>
           </div>
           <div class="card-face card-back">
             <div class="face-label">中文解釋</div>
@@ -36,6 +42,10 @@
             <div class="word-detail">
               <strong>字根分析</strong>
               <p id="wordRoot">請點擊卡片以查看內容。</p>
+            </div>
+            <div class="word-detail">
+              <strong>相關單字</strong>
+              <p id="wordRelated">請搜尋單字以顯示相關詞。</p>
             </div>
           </div>
         </div>

@@ -4,9 +4,13 @@ const wordMeaning = document.getElementById('wordMeaning');
 const wordPart = document.getElementById('wordPart');
 const wordSentence = document.getElementById('wordSentence');
 const wordRoot = document.getElementById('wordRoot');
+const wordRootPreview = document.getElementById('wordRootPreview');
 const progressText = document.getElementById('progressText');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const wordRelated = document.getElementById('wordRelated');
 
 const cards = [
   { english: 'abundant', chinese: '豐富的；充足的', part: 'adj.', sentence: 'The forest is abundant with wildlife.', root: 'ab- (away) + undant (wave), 豐富。' },
@@ -119,7 +123,129 @@ function renderCard() {
   wordPart.textContent = card.part;
   wordSentence.textContent = card.sentence;
   wordRoot.textContent = card.root;
+  wordRootPreview.textContent = `字根：${card.root}`;
+  wordRelated.textContent = card.related || '無相關單字資訊。';
   progressText.textContent = `${currentIndex + 1} / ${cards.length}`;
+}
+
+function isChinese(text) {
+  return /[\u4e00-\u9fff]/.test(text);
+}
+
+async function fetchTranslation(text, from, to) {
+  try {
+    const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`);
+    const data = await response.json();
+    return data.responseData?.translatedText || '';
+  } catch (error) {
+    return '';
+  }
+}
+
+async function fetchDictionary(word) {
+  try {
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.toLowerCase())}`);
+    if (!response.ok) {
+      throw new Error('dictionary not found');
+    }
+    const data = await response.json();
+    const entry = data[0];
+    const meaning = entry.meanings[0];
+    const definition = meaning.definitions[0]?.definition || '';
+    const example = meaning.definitions.find(def => def.example)?.example || meaning.definitions[0]?.example || '';
+    const synonyms = meaning.definitions[0]?.synonyms || meaning.synonyms || [];
+    return {
+      word: entry.word,
+      part: meaning.partOfSpeech || '--',
+      definition,
+      example,
+      synonyms,
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
+async function fetchRelatedWords(word) {
+  try {
+    const response = await fetch(`https://api.datamuse.com/words?ml=${encodeURIComponent(word)}&max=6`);
+    const data = await response.json();
+    return data.map(item => item.word).slice(0, 5);
+  } catch (error) {
+    return [];
+  }
+}
+
+function deriveRoot(word) {
+  const commonRoots = ['re', 'un', 'in', 'im', 'dis', 'pre', 'mis', 'sub', 'inter', 'trans', 'auto', 'bio', 'tele', 'micro', 'macro', 'semi'];
+  const lower = word.toLowerCase();
+  const matched = commonRoots.find(root => lower.startsWith(root));
+  if (matched) {
+    return `${matched}- (可能字根) + ${lower.slice(matched.length)} (詞幹)`;
+  }
+  if (lower.length > 5) {
+    return `${lower.slice(0, 3)}- (字首) + ${lower.slice(3)} (詞幹)`;
+  }
+  return '暫無字根資訊。';
+}
+
+async function searchWord() {
+  const rawInput = searchInput.value.trim();
+  if (!rawInput) {
+    alert('請輸入中文或英文單字。');
+    return;
+  }
+
+  flashcard.classList.remove('is-flipped');
+  wordText.textContent = '搜尋中...';
+  wordMeaning.textContent = '請稍候。';
+  wordPart.textContent = '--';
+  wordSentence.textContent = '搜尋中...';
+  wordRoot.textContent = '搜尋中...';
+  wordRelated.textContent = '搜尋中...';
+
+  const isZh = isChinese(rawInput);
+  let englishWord = rawInput;
+  let chineseText = rawInput;
+  let result = null;
+
+  let translationText = chineseText;
+
+  if (isZh) {
+    const translated = await fetchTranslation(rawInput, 'zh', 'en');
+    englishWord = translated || rawInput;
+    const dictionary = await fetchDictionary(englishWord);
+    translationText = chineseText;
+    result = dictionary || {
+      word: englishWord,
+      part: '--',
+      definition: '暫無英文定義。',
+      example: '暫無例句。',
+      synonyms: [],
+    };
+  } else {
+    const dictionary = await fetchDictionary(rawInput);
+    const translated = await fetchTranslation(rawInput, 'en', 'zh');
+    translationText = translated || '無法取得中文翻譯';
+    result = dictionary || {
+      word: rawInput,
+      part: '--',
+      definition: '暫無英文定義。',
+      example: '暫無例句。',
+      synonyms: [],
+    };
+  }
+
+  const related = await fetchRelatedWords(result.word || englishWord);
+  const root = deriveRoot(result.word || englishWord);
+
+  wordText.textContent = result.word || englishWord;
+  wordMeaning.textContent = isZh ? translationText : translationText;
+  wordPart.textContent = result.part || '--';
+  wordSentence.textContent = result.example || '暫無例句。';
+  wordRoot.textContent = root;
+  wordRootPreview.textContent = `字根：${root}`;
+  wordRelated.textContent = related.length ? related.join('、') : '暫無相關單字。';
 }
 
 function flipCard() {
@@ -156,5 +282,11 @@ flashcard.addEventListener('keydown', (event) => {
 
 prevBtn.addEventListener('click', showPreviousCard);
 nextBtn.addEventListener('click', showNextCard);
+searchBtn.addEventListener('click', searchWord);
+searchInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    searchWord();
+  }
+});
 
 renderCard();
